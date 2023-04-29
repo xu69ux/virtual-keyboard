@@ -6,50 +6,35 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.container {
+.textarea {
+  display: block;
+  width: 950px;
+  height: 100%;
+  margin: 150px auto 20px;
+}
+
+.keyboard {
+  margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   height: 100%;
-  margin: 0 10px;
-}
-
-.keyboard_wrapper {
-  width: 950px;
+  width: 1000px;
   background-color: #555555;
   position: relative;
   overflow: hidden;
   order: 2;
   padding: 5px;
-}
-
-.input_wrapper {
-  width: 950px;
-  margin: 150px 0 20px 0;
-}
-
-.input {
-  width: 100%;
-  height: 40px;
-  border-radius: 5px;
-  border: none;
-  font-size: 1.5em;
-  padding: 0 10px;
-}
-
-.touch_bar {
-  background-color: black;
-  width: 100%;
-  height: 40px;
-  border-radius: 5px;
+  user-select: none;
 }
 
 .row {
   display: flex;
 }
 
-.keys {
+.key {
+  display: inline-flex;
   background-color: black;
   color: white;
   height: 60px;
@@ -57,65 +42,82 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
+  border-radius: 4px;
+  border: none;
+  font-size: 1rem;
   margin: 2px;
+  outline: none;
+  position: relative;
 }
 
-.delete_key {
+.key.active {
+  background-color: white;
+  color: black;
+}
+
+.modifier {
+  font-size: .8rem;
+  padding-top: 30px;
+}
+
+#key-Backspace {
   width: 110px;
-  padding: 0 0 0 50px;
+  padding-left: 60px; 
 }
 
-.tab_key {
+#key-Tab {
   width: 110px;
   padding-right: 70px;
 }
 
-.caps_lock_key {
+#key-CapsLock {
   width: 120px;
   padding-right: 45px;
+  position: relative;
 }
 
-.enter_key {
+#key-Enter {
   width: 120px;
   padding-left: 70px;
 }
 
-.fn_key {
+#key-Fn {
   padding-right: 20px;
 }
 
-.shift_key {
+#key-ShiftLeft {
   width: 147px;
-}
-
-.shift_key.left {
   padding-right: 100px;
 }
 
-.shift_key.right {
+#key-ShiftRight {
+  width: 147px;
   padding-left: 100px;
 }
 
-.space_key {
+#key-Space {
   width: 316px;
 }
 
-.command_key {
+#key-Command {
   width: 81px;
 }
 
-.half_key {
-  margin: 2px;
+#key-ArrowLeft, 
+#key-ArrowRight, 
+#key-ArrowUp, 
+#key-ArrowDown {
+  padding: 0;
 }
 
-.keys.half_key {
+.half-key {
   width: 60px;
   height: 30px;
   margin: 0;
 }
 
-.modifier {
-  font-size: .8em;
-  padding-top: 30px;
+.half-key-container {
+  display: flex;
 }
+
+
