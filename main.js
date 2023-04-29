@@ -126,7 +126,7 @@ const Keys_ru = {
     KeyL: { char: 'д', row: 3 },
     Semicolon: { char: 'ж', row: 3 },
     Quote: { char: 'э', row: 3 },
-    Enter: { show: 'enter', row: 3 },
+    Enter: { show: 'return', row: 3 },
 
     ShiftLeft: { show: 'shift', row: 4 },
     KeyZ: { char: 'я', row: 4 },
@@ -159,6 +159,10 @@ const Keys = {
   ru: Keys_ru
 };
 
+const Emoji = [
+    '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'
+]
+
 // Рендерит страницу
 function renderLayout() {
     textarea = document.createElement('textarea');
@@ -176,9 +180,13 @@ function renderLayout() {
     document.body.append(elHint);
 };
 
-// Рендерит клавиатуру в текущей раскладке в elKeyboard
+// Рендерит клавиатуру в текущей раскладке в elKeyboard и перерендеривает её при смене раскладки
 function renderKeyboard() {
     elKeyboard.innerHTML = '';
+
+    let touchBar = document.createElement('div');
+    touchBar.classList.add('touch-bar');
+    elKeyboard.append(touchBar);
 
     for (let row = 1; row <= 5; row++) {
         let elRow = document.createElement('div'), 
@@ -209,7 +217,6 @@ function renderKeyboard() {
 
                 if (keyCode === 'ArrowUp') {
                     elKeyHalfContainer = document.createElement('div');
-                    elKeyHalfContainer.classList.add('half-key-container');
                     elRow.append(elKeyHalfContainer);
                 }
 
@@ -221,6 +228,13 @@ function renderKeyboard() {
             }
         }    
         elKeyboard.append(elRow);
+    }
+
+    for (let emoji of Emoji) {
+        let elEmoji = document.createElement('div');
+        elEmoji.classList.add('emoji');
+        elEmoji.innerHTML = emoji;
+        touchBar.append(elEmoji);
     }
 };
 
@@ -323,11 +337,34 @@ function keyUpHendler(e) {
     }
 };
 
+function keyboardMouseDownHandler(e) {
+    textarea.focus();
+    // Поднимаемся вверх до div.key
+    let target = e.target;
+    while (target && target != document && !( match = target.matches('div.key'))) {
+        target = target.parentNode;
+    }
+    if (!match) return;
+    window.dispatchEvent(new KeyboardEvent('keydown', {code: target.id.slice(4), shiftKey: e.shiftKey, ctrlKey: e.ctrlKey, altKey: e.altKey}));
+};
+
+function keyboardMouseUpHandler(e) {
+    // Поднимаемся вверх до div.key
+    let target = e.target;
+    while (target && target != document && !( match = target.matches('div.key'))) {
+        target = target.parentNode;
+    }
+    if (!match) return;
+    window.dispatchEvent(new KeyboardEvent('keyup', {code: target.id.slice(4)}));
+};
+
 function init() {
     renderLayout();
     renderKeyboard();
     window.addEventListener('keydown', keyDownHendler);
     window.addEventListener('keyup', keyUpHendler);
+    elKeyboard.addEventListener('mousedown', keyboardMouseDownHandler);
+    elKeyboard.addEventListener('mouseup', keyboardMouseUpHandler);
     textarea.focus();
     // Блокируем ввод текста в textarea естественным образом
     textarea.addEventListener('keydown', e => e.preventDefault());
