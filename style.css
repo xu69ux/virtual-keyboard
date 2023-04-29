@@ -26,7 +26,7 @@ body, .textarea {
   align-items: center;
   flex-direction: column;
   height: 100%;
-  width: 1000px;
+  width: 950px;
   background-color: #555555;
   position: relative;
   overflow: hidden;
@@ -91,7 +91,7 @@ body, .textarea {
   opacity: .2;
   top: 10px;
   left: 10px;
-  border-radius: 4px; 
+  border-radius: 5px; 
 }
 #key-CapsLock.active {
   background-color: black;
@@ -103,7 +103,7 @@ body, .textarea {
 }
 
 #key-Enter {
-  width: 120px;
+  width: 113px;
   padding-left: 70px;
 }
 
@@ -112,20 +112,23 @@ body, .textarea {
 }
 
 #key-ShiftLeft {
-  width: 147px;
+  width: 149px;
   padding-right: 100px;
 }
 
 #key-ShiftRight {
-  width: 147px;
+  width: 149px;
   padding-left: 100px;
 }
 
 #key-Space {
-  width: 316px;
+  width: 325px;
 }
 
-#key-Command {
+#key-MetaRight {
+  width: 81px;
+}
+#key-MetaLeft {
   width: 81px;
 }
 

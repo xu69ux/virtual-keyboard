@@ -181,7 +181,8 @@ function renderKeyboard() {
     elKeyboard.innerHTML = '';
 
     for (let row = 1; row <= 5; row++) {
-        let elRow = document.createElement('div'), elKeyHalfContainer;
+        let elRow = document.createElement('div'), 
+            elKeyHalfContainer;
         elRow.classList.add('row');
         for (let keyCode in Keys[layout]) {
             if (Keys[layout][keyCode].row === row) {  
@@ -242,7 +243,7 @@ function switchLayout() {
 
 // Обработчик нажатия на клавишу
 function keyDownHendler(e) {
-    console.log('keydown: code=%s key=%s [keyCode=%s] selectionStart=%s custom=%s', e.code, e.key, e.keyCode, textarea.selectionStart, e.custom);
+    console.log('keydown: code=%s [ctrl=%s] selectionStart=%s', e.code, e.ctrlKey, textarea.selectionStart);
     let elKey = document.getElementById('key-' + e.code);
     let val;
 
