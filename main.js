@@ -71,12 +71,12 @@ const Keys_en = {
     ShiftRight: { show: 'shift', row: 4 },
 
     Fn: { show: 'fn', row: 5 },
-    Control: { show: 'control', row: 5 },
-    OptionLeft: { show: 'option', row: 5 },
-    CommandLeft: { show: 'command', row: 5 },
+    ControlLeft: { show: 'control', row: 5 },
+    AltLeft: { show: 'option', row: 5 },
+    MetaLeft: { show: 'command', row: 5 },
     Space: { show: '', char: ' ', row: 5 },
-    CommandRight: { show: 'command', row: 5 },
-    OptionRight: { show: 'option', row: 5 },
+    MetaRight: { show: 'command', row: 5 },
+    AltRight: { show: 'option', row: 5 },
     ArrowLeft: { show: '&larr;', row: 5 },
     ArrowUp: { show: '&uarr;', row: 5, class: 'half-key' },
     ArrowDown: { show: '&darr;', row: 5, class: 'half-key' },
@@ -142,12 +142,12 @@ const Keys_ru = {
     ShiftRight: { show: 'shift', row: 4 },
 
     Fn: { show: 'fn', row: 5 },
-    Control: { show: 'control', row: 5 },
-    OptionLeft: { show: 'option', row: 5 },
-    CommandLeft: { show: 'command', row: 5 },
+    ControlLeft: { show: 'control', row: 5 },
+    AltLeft: { show: 'option', row: 5 },
+    MetaLeft: { show: 'command', row: 5 },
     Space: { show: '', char: ' ', row: 5 },
-    CommandRight: { show: 'command', row: 5 },
-    OptionRight: { show: 'option', row: 5 },
+    MetaRight: { show: 'command', row: 5 },
+    AltRight: { show: 'option', row: 5 },
     ArrowLeft: { show: '&larr;', row: 5 },
     ArrowUp: { show: '&uarr;', row: 5, class: 'half-key' },
     ArrowDown: { show: '&darr;', row: 5, class: 'half-key' },
@@ -181,7 +181,7 @@ function renderKeyboard() {
     elKeyboard.innerHTML = '';
 
     for (let row = 1; row <= 5; row++) {
-        let elRow = document.createElement('div');
+        let elRow = document.createElement('div'), elKeyHalfContainer;
         elRow.classList.add('row');
         for (let keyCode in Keys[layout]) {
             if (Keys[layout][keyCode].row === row) {  
@@ -191,8 +191,12 @@ function renderKeyboard() {
                 if (keyInfo.char === undefined) {
                     elKey.classList.add('modifier');
                 }
+                if (keyInfo.class === 'activatable') {
+                    elKey.classList.add(keyInfo.class);
+                }
                 if (keyInfo.class === 'half-key') {
                     elKey.classList.add(keyInfo.class);
+
                 }
                 elKey.id = 'key-' + keyCode;
 
@@ -201,7 +205,18 @@ function renderKeyboard() {
                 } else {
                   elKey.innerHTML = keyInfo.char.toUpperCase();
                 }
-                elRow.append(elKey);
+
+                if (keyCode === 'ArrowUp') {
+                    elKeyHalfContainer = document.createElement('div');
+                    elKeyHalfContainer.classList.add('half-key-container');
+                    elRow.append(elKeyHalfContainer);
+                }
+
+                if (keyCode === 'ArrowUp' || keyCode === 'ArrowDown') {
+                    elKeyHalfContainer.append(elKey);
+                } else {
+                    elRow.append(elKey);
+                }
             }
         }    
         elKeyboard.append(elRow);
@@ -280,11 +295,11 @@ function keyDownHendler(e) {
             break;
         case 'CapsLock':
             isCapsLock = !isCapsLock;
-            if (isCapsLock) {
-                document.getElementById('key-CapsLock').classList.add('on');
-            } else {
-                document.getElementById('key-CapsLock').classList.remove('on');
-            }
+            // if (isCapsLock) {
+            //     document.getElementById('key-CapsLock').classList.add('on');
+            // } else {
+            //     document.getElementById('key-CapsLock').classList.remove('on');
+            // }
             break;
         default:
             let keyInfo = Keys[layout][e.code];
@@ -300,6 +315,7 @@ function keyDownHendler(e) {
 };
 
 function keyUpHendler(e) {
+    console.log('keyup: code=%s', e.code);
     let elKey =  document.getElementById('key-' + e.code);
     if (elKey) {
         elKey.classList.remove('active');
@@ -311,6 +327,11 @@ function init() {
     renderKeyboard();
     window.addEventListener('keydown', keyDownHendler);
     window.addEventListener('keyup', keyUpHendler);
+    textarea.focus();
+    // Блокируем ввод текста в textarea естественным образом
+    textarea.addEventListener('keydown', e => e.preventDefault());
+    textarea.addEventListener('keyup', e => e.preventDefault());
+    textarea.addEventListener('keypress', e => e.preventDefault());
 };
 
 window.onload = init;
