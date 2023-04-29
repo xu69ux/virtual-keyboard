@@ -2,7 +2,7 @@
   box-sizing: border-box;
 }
 
-body {
+body, .textarea {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -11,6 +11,12 @@ body {
   width: 950px;
   height: 100%;
   margin: 150px auto 20px;
+}
+
+.hint {
+  display: block;
+  margin: 20px auto;
+  text-align: center;
 }
 
 .keyboard {

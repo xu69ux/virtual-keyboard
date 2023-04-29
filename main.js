@@ -1,7 +1,10 @@
 let textarea = document.querySelector('textarea'),
     // Контейнер, куда рендерится клавиатура функцией renderKeyboard()
     elKeyboard = document.getElementById('keyboard');
-    layout = 'en';
+    // Раскладка хранится в localStorage, ключ "layout". Если её туда ещё не записали, то используем дефолтное значение "en"
+    layout = localStorage.layout ?? 'en',
+    // Включен ли наш "виртуальный" CapsLock
+    isCapsLock = false;
 
 // KeyboardEvent.code: {char?, shift?, show?, row}
 // char: какой символ вставить
@@ -166,6 +169,11 @@ function renderLayout() {
     elKeyboard = document.createElement('div');
     elKeyboard.classList.add('keyboard')
     document.body.append(elKeyboard);
+
+    let elHint = document.createElement('p');
+    elHint.classList.add('hint');
+    elHint.innerHTML = 'Переключение раскладки: левый Ctrl+Shift';
+    document.body.append(elHint);
 };
 
 // Рендерит клавиатуру в текущей раскладке в elKeyboard
@@ -200,9 +208,109 @@ function renderKeyboard() {
     }
 };
 
+// Вставляет в textarea текст text в позиции курсора
+function insertText(text) {
+    let val = textarea.value, pos = textarea.selectionStart;
+    textarea.value = val.slice(0, pos) + text + val.slice(pos);
+    textarea.selectionStart = pos + text.length;
+    textarea.selectionEnd = textarea.selectionStart;
+};
+
+// Переключает раскладку и запоминает её в localStorage
+function switchLayout() {
+    if (layout === 'en') layout = 'ru';
+    else layout = 'en';
+    localStorage.layout = layout;
+    console.log('switchLayout', layout);
+    renderKeyboard();
+};
+
+// Обработчик нажатия на клавишу
+function keyDownHendler(e) {
+    console.log('keydown: code=%s key=%s [keyCode=%s] selectionStart=%s custom=%s', e.code, e.key, e.keyCode, textarea.selectionStart, e.custom);
+    let elKey = document.getElementById('key-' + e.code);
+    let val;
+
+    if (elKey) {
+        elKey.classList.add('active');
+    }
+    // Особые клавиши
+    switch (e.code) {
+        case 'ArrowLeft':
+            textarea.selectionStart--;
+            textarea.selectionEnd = textarea.selectionStart;
+            break;
+        case 'ArrowRight':
+            textarea.selectionStart++;
+            textarea.selectionEnd = textarea.selectionStart;
+            break;
+        case 'ArrowUp':
+            insertText('▲');
+            break;
+        case 'ArrowDown':
+            insertText('▼');
+            break;
+        case 'Tab':
+            insertText('    ');
+            break;
+        case 'Enter':
+            insertText('\n');
+            break;
+        case 'Backspace':
+            val = textarea.value, pos = textarea.selectionStart;
+            if (pos > 0) {
+                textarea.value = val.slice(0, pos - 1) + val.slice(pos);
+                textarea.selectionStart = pos - 1;
+                textarea.selectionEnd = textarea.selectionStart;
+            }
+            break;
+        case 'Delete':
+            val = textarea.value, pos = textarea.selectionStart;
+            if (pos < val.length ) {
+                textarea.value = val.slice(0, pos) + val.slice(pos + 1);
+                textarea.selectionStart = pos;
+                textarea.selectionEnd = textarea.selectionStart;
+            }
+            break;
+        case 'ShiftLeft':
+            // Переключаем раскладку по Ctrl+Shift (левый);
+            if (e.ctrlKey) {
+                switchLayout();
+            }
+            break;
+        case 'CapsLock':
+            isCapsLock = !isCapsLock;
+            if (isCapsLock) {
+                document.getElementById('key-CapsLock').classList.add('on');
+            } else {
+                document.getElementById('key-CapsLock').classList.remove('on');
+            }
+            break;
+        default:
+            let keyInfo = Keys[layout][e.code];
+            if (keyInfo !== undefined && keyInfo.char) {
+                if (e.shiftKey && !isCapsLock || !e.shiftKey && isCapsLock) {
+                    insertText(keyInfo.shift ? keyInfo.shift : keyInfo.char.toUpperCase());
+                } else {
+                    insertText(keyInfo.char);
+                }
+            }
+    }
+    textarea.focus();
+};
+
+function keyUpHendler(e) {
+    let elKey =  document.getElementById('key-' + e.code);
+    if (elKey) {
+        elKey.classList.remove('active');
+    }
+};
+
 function init() {
     renderLayout();
     renderKeyboard();
+    window.addEventListener('keydown', keyDownHendler);
+    window.addEventListener('keyup', keyUpHendler);
 };
 
 window.onload = init;
