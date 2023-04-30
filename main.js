@@ -225,16 +225,17 @@ const Keys = {
   ru: Keys_ru
 };
 
-const bptr = 0,
+let pptr = 0,
       B = 493.9,
       Fd = 740.0,
       G = 784.0,
       E = 659.3,
       C = 523.3,
+      Cd = 554.4,
       D = 587.3;
 
 // B F# B G E F# G G F# E B B F# B G F# E D E D C C D C B
-const pain = [B, Fd, B, G, Fd, E, Fd, G, G, Fd, E, B, B, Fd, B, G, Fd, E, D, E, D, C, C, D, C, B];
+const pain = [B, Fd, E, G, Fd, E, Fd, E, Fd, G, G, Fd, E, B, Fd, B, G, Fd, E, D, E, D, Cd, Cd, D, Cd, B];
 
 
 // Рендерит страницу
@@ -349,8 +350,8 @@ function keyDownHendler(e) {
     let val;
     let context = new AudioContext();
     let o = context.createOscillator()
-    o.frequency.value = pain[bptr++];
-    bptr %= pain.length;
+    o.frequency.value = pain[pptr++];
+    pptr %= pain.length;
     o.type = "sine"
     o.connect(context.destination)
     o.start()
@@ -451,7 +452,11 @@ function keyboardMouseUpHandler(e) {
         target = target.parentNode;
     }
     if (!match) return;
-    window.dispatchEvent(new KeyboardEvent('keyup', {code: target.id.slice(4)}));
+    let key = target.id.slice(4);
+    if (key === 'CapsLock' && isCapsLock) {
+        return;
+    }
+    window.dispatchEvent(new KeyboardEvent('keyup', {code: key}));
 };
 
 function init() {
