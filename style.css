@@ -20,6 +20,9 @@ body, .textarea {
   width: 950px;
   height: 100%;
   margin: 30px auto 20px;
+  outline: none;
+  resize: none;
+  font-size: 1.3rem;
 }
 
 .hint {
@@ -28,6 +31,7 @@ body, .textarea {
   text-align: center;
 }
 
+.delete-hint,
 .music-hint {
   display: block;
   margin: 10px auto 0;
@@ -71,6 +75,7 @@ body, .textarea {
   margin: 2px;
   outline: none;
   position: relative;
+  transition: .2s;
 }
 
 .key.active {

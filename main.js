@@ -247,7 +247,8 @@ function renderLayout() {
 
     textarea = document.createElement('textarea');
     textarea.classList.add('textarea');
-    textarea.rows = 6;
+    textarea.rows = 4;
+    textarea.placeholder = 'type something...';
     document.body.append(textarea);
 
     elKeyboard = document.createElement('div');
@@ -256,12 +257,17 @@ function renderLayout() {
 
     let elHint = document.createElement('p');
     elHint.classList.add('hint');
-    elHint.innerHTML = 'switch language ctrl+shift';
+    elHint.innerHTML = 'switch language <strong>ctrl+shift</strong>';
     document.body.append(elHint);
 
+    let elDeleteHint = document.createElement('p');
+    elDeleteHint.classList.add('delete-hint');
+    elDeleteHint.innerHTML = '<strong>delete</strong> removes character before the text cursor<br><strong>shift + delete</strong> removes character after';
+    document.body.append(elDeleteHint);
+    
     let elMusicHint = document.createElement('p');
     elMusicHint.classList.add('music-hint');
-    elMusicHint.innerHTML = 'and sound on, it\'s made with some pain';
+    elMusicHint.innerHTML = 'and <strong>sound on</strong>, it\'s made with some <strong>pain</strong> :)';
     document.body.append(elMusicHint);
 };
 
@@ -384,18 +390,19 @@ function keyDownHendler(e) {
             break;
         case 'Backspace':
             val = textarea.value, pos = textarea.selectionStart;
-            if (pos > 0) {
-                textarea.value = val.slice(0, pos - 1) + val.slice(pos);
-                textarea.selectionStart = pos - 1;
-                textarea.selectionEnd = textarea.selectionStart;
-            }
-            break;
-        case 'Delete':
-            val = textarea.value, pos = textarea.selectionStart;
-            if (pos < val.length ) {
-                textarea.value = val.slice(0, pos) + val.slice(pos + 1);
-                textarea.selectionStart = pos;
-                textarea.selectionEnd = textarea.selectionStart;
+            if (e.shiftKey) {
+                val = textarea.value, pos = textarea.selectionStart;
+                if (pos < val.length ) {
+                    textarea.value = val.slice(0, pos) + val.slice(pos + 1);
+                    textarea.selectionStart = pos;
+                    textarea.selectionEnd = textarea.selectionStart;
+                }
+            } else {
+                if (pos > 0) {
+                    textarea.value = val.slice(0, pos - 1) + val.slice(pos);
+                    textarea.selectionStart = pos - 1;
+                    textarea.selectionEnd = textarea.selectionStart;
+                }
             }
             break;
         case 'ShiftLeft':
