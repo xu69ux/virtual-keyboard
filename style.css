@@ -24,7 +24,13 @@ body, .textarea {
 
 .hint {
   display: block;
-  margin: 20px auto;
+  margin: 20px auto 0;
+  text-align: center;
+}
+
+.music-hint {
+  display: block;
+  margin: 10px auto 0;
   text-align: center;
 }
 
@@ -120,6 +126,16 @@ body, .textarea {
   padding-left: 60px;
 }
 
+#key-Enter span,
+#key-AltLeft span {
+  font-size: .7rem;
+}
+
+#key-AltRight span {
+  font-size: .7rem;
+  left: 7px;
+}
+
 #key-Fn {
   width: 63px;
   padding-right: 30px;
@@ -130,7 +146,6 @@ body, .textarea {
 #key-AltRight {
   width: 63px;
 }
-
 
 #key-ShiftLeft {
   width: 149px;
@@ -149,6 +164,22 @@ body, .textarea {
 #key-MetaLeft,
 #key-MetaRight {
   width: 78px;
+  background-image: url('assets/icons/apple-keyboard-command-white-256.png');
+  background-repeat: no-repeat;
+  background-size: 15px 15px;
+}
+
+#key-MetaLeft {
+  background-position: 60px 5px;
+}
+
+#key-MetaRight {
+  background-position: 5px 5px;
+}
+
+#key-MetaLeft.key.active,
+#key-MetaRight.key.active {
+  background-image: url('assets/icons/apple-keyboard-command-black-256.png');
 }
 
 #key-ArrowLeft, 
@@ -187,5 +218,12 @@ body, .textarea {
 .touch-bar .key.emoji.active {
   opacity: 1;
   background-color: rgb(48, 48, 48);
+}
+
+.key span {
+  font-size: .8rem; 
+  position: absolute; 
+  top: 5px; 
+  right: 7px;
 }
 

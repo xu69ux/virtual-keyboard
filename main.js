@@ -88,7 +88,7 @@ const Keys_en = {
     KeyL: { char: 'l', row: 3 },
     Semicolon: { char: ';', shift: ':', row: 3 },
     Quote: { char: '\'', shift: '"', row: 3 },
-    Enter: { show: 'return', row: 3 },
+    Enter: { show: 'return', shift: 'enter', row: 3 },
 
     ShiftLeft: { show: 'shift', row: 4 },
     KeyZ: { char: 'z', row: 4 },
@@ -105,11 +105,11 @@ const Keys_en = {
 
     Fn: { show: 'fn', row: 5 },
     ControlLeft: { show: 'control', row: 5 },
-    AltLeft: { show: 'option', row: 5 },
+    AltLeft: { show: 'option', shift: 'alt', row: 5 },
     MetaLeft: { show: 'command', row: 5 },
     Space: { show: '', char: ' ', row: 5 },
     MetaRight: { show: 'command', row: 5 },
-    AltRight: { show: 'option', row: 5 },
+    AltRight: { show: 'option', shift: 'alt', row: 5 },
     ArrowLeft: { show: '&larr;', row: 5 },
     ArrowUp: { show: '&uarr;', row: 5, class: 'half-key' },
     ArrowDown: { show: '&darr;', row: 5, class: 'half-key' },
@@ -225,6 +225,18 @@ const Keys = {
   ru: Keys_ru
 };
 
+const bptr = 0,
+      B = 493.9,
+      Fd = 740.0,
+      G = 784.0,
+      E = 659.3,
+      C = 523.3,
+      D = 587.3;
+
+// B F# B G E F# G G F# E B B F# B G F# E D E D C C D C B
+const pain = [B, Fd, B, G, Fd, E, Fd, G, G, Fd, E, B, B, Fd, B, G, Fd, E, D, E, D, C, C, D, C, B];
+
+
 // Рендерит страницу
 function renderLayout() {
     let title = document.createElement('h1');
@@ -243,8 +255,13 @@ function renderLayout() {
 
     let elHint = document.createElement('p');
     elHint.classList.add('hint');
-    elHint.innerHTML = 'switch language Ctrl+Shift';
+    elHint.innerHTML = 'switch language ctrl+shift';
     document.body.append(elHint);
+
+    let elMusicHint = document.createElement('p');
+    elMusicHint.classList.add('music-hint');
+    elMusicHint.innerHTML = 'and sound on, it\'s made with some pain';
+    document.body.append(elMusicHint);
 };
 
 // Рендерит клавиатуру в текущей раскладке в elKeyboard и перерендеривает её при смене раскладки
@@ -290,8 +307,15 @@ function renderKeyboard() {
                     elRow.append(elKeyHalfContainer);
                 }
 
+                if (keyInfo.shift) {
+                    let elShift = document.createElement('span');
+                    elShift.innerHTML = keyInfo.shift;
+                    elKey.append(elShift);
+                }
+
                 if (keyCode === 'ArrowUp' || keyCode === 'ArrowDown') {
                     elKeyHalfContainer.append(elKey);
+
                 } else {
                     elRow.append(elKey);
                 }
@@ -323,6 +347,14 @@ function keyDownHendler(e) {
     console.log('keydown: code=%s [ctrl=%s] selectionStart=%s', e.code, e.ctrlKey, textarea.selectionStart);
     let elKey = document.getElementById('key-' + e.code);
     let val;
+    let context = new AudioContext();
+    let o = context.createOscillator()
+    o.frequency.value = pain[bptr++];
+    bptr %= pain.length;
+    o.type = "sine"
+    o.connect(context.destination)
+    o.start()
+    setTimeout(() => {o.stop()}, 100)
 
     if (elKey) {
         elKey.classList.add('active');
