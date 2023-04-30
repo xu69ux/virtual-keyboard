@@ -6,11 +6,20 @@ body, .textarea {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+.title {
+  display: block;
+  height: 100%;
+  text-align: center;
+  margin: 100px auto 0;
+  font-size: 2rem;
+  color: black;
+}
+
 .textarea {
   display: block;
   width: 950px;
   height: 100%;
-  margin: 150px auto 20px;
+  margin: 30px auto 20px;
 }
 
 .hint {
@@ -70,7 +79,7 @@ body, .textarea {
 
 #key-Backspace {
   width: 110px;
-  padding-left: 60px; 
+  padding-left: 55px; 
 }
 
 #key-Tab {
@@ -108,34 +117,38 @@ body, .textarea {
 
 #key-Enter {
   width: 113px;
-  padding-left: 70px;
+  padding-left: 60px;
 }
 
 #key-Fn {
-  width: 61.5px;
-  padding-right: 20px;
+  width: 63px;
+  padding-right: 30px;
 }
 
 #key-ControlLeft,
 #key-AltLeft,
 #key-AltRight {
-  width: 61.5px;
+  width: 63px;
 }
 
 
-#key-ShiftLeft,
-#key-ShiftRight{
+#key-ShiftLeft {
   width: 149px;
   padding-right: 100px;
 }
 
+#key-ShiftRight{
+  width: 149px;
+  padding-left: 100px;
+}
+
 #key-Space {
-  width: 316px;
+  width: 318px;
 }
 
 #key-MetaLeft,
 #key-MetaRight {
-  width: 81px;
+  width: 78px;
 }
 
 #key-ArrowLeft, 
@@ -154,21 +167,25 @@ body, .textarea {
 .touch-bar {
   height: 30px;
   width: 940px;
-  margin: 0 auto;
+  margin: 2px auto;
   border-radius: 5px;
   border: none;
   background-color: rgba(0, 0, 0, 0.8);
   overflow: hidden;
-  padding: 0 5px;
+  padding: 0 20px;
 }
 
-.touch-bar .emoji {
+.touch-bar .key.emoji {
   width: 20px;
   height: 20px;
-  margin: 5px;
+  margin: 4px;
   display: inline-block;
   opacity: .8;
+  text-align: center;
 }
 
-
+.touch-bar .key.emoji.active {
+  opacity: 1;
+  background-color: rgb(48, 48, 48);
+}
 
