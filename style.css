@@ -114,6 +114,7 @@ body, .textarea {
   top: 10px;
   left: 10px;
   border-radius: 5px; 
+  transition: .2s;
 }
 
 #key-CapsLock.active {

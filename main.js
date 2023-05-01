@@ -1,6 +1,6 @@
 let textarea = document.querySelector('textarea'),
     // Контейнер, куда рендерится клавиатура функцией renderKeyboard()
-    elKeyboard = document.getElementById('keyboard');
+    elKeyboard = document.getElementById('keyboard'),
     // Раскладка хранится в localStorage, ключ "layout". Если её туда ещё не записали, то используем дефолтное значение "en"
     layout = localStorage.layout ?? 'en',
     // Включен ли наш "виртуальный" CapsLock
@@ -230,7 +230,6 @@ let pptr = 0,
       Fd = 740.0,
       G = 784.0,
       E = 659.3,
-      C = 523.3,
       Cd = 554.4,
       D = 587.3;
 
@@ -269,7 +268,7 @@ function renderLayout() {
     elMusicHint.classList.add('music-hint');
     elMusicHint.innerHTML = 'and <strong>sound on</strong>, it\'s made with some <strong>pain</strong> :)';
     document.body.append(elMusicHint);
-};
+}
 
 // Рендерит клавиатуру в текущей раскладке в elKeyboard и перерендеривает её при смене раскладки
 function renderKeyboard() {
@@ -330,7 +329,7 @@ function renderKeyboard() {
         }    
         elKeyboard.append(elRow);
     }
-};
+}
 
 // Вставляет в textarea текст text в позиции курсора
 function insertText(text) {
@@ -338,7 +337,7 @@ function insertText(text) {
     textarea.value = val.slice(0, pos) + text + val.slice(pos);
     textarea.selectionStart = pos + text.length;
     textarea.selectionEnd = textarea.selectionStart;
-};
+}
 
 // Переключает раскладку и запоминает её в localStorage
 function switchLayout() {
@@ -347,13 +346,15 @@ function switchLayout() {
     localStorage.layout = layout;
     console.log('switchLayout', layout);
     renderKeyboard();
-};
+}
 
 // Обработчик нажатия на клавишу
 function keyDownHendler(e) {
     console.log('keydown: code=%s [ctrl=%s] selectionStart=%s', e.code, e.ctrlKey, textarea.selectionStart);
     let elKey = document.getElementById('key-' + e.code);
+    let keyInfo = Keys[layout][e.code];
     let val;
+    let pos;
     let context = new AudioContext();
     let o = context.createOscillator()
     o.frequency.value = pain[pptr++];
@@ -420,7 +421,6 @@ function keyDownHendler(e) {
             // }
             break;
         default:
-            let keyInfo = Keys[layout][e.code];
             if (keyInfo !== undefined && keyInfo.char) {
                 if (e.shiftKey && !isCapsLock || !e.shiftKey && isCapsLock) {
                     insertText(keyInfo.shift ? keyInfo.shift : keyInfo.char.toUpperCase());
@@ -430,31 +430,31 @@ function keyDownHendler(e) {
             }
     }
     textarea.focus();
-};
+}
 
 function keyUpHendler(e) {
-    console.log('keyup: code=%s', e.code);
     let elKey =  document.getElementById('key-' + e.code);
     if (elKey) {
         elKey.classList.remove('active');
     }
-};
+}
 
 function keyboardMouseDownHandler(e) {
-    console.log('click')
     textarea.focus();
     // Поднимаемся вверх до div.key
     let target = e.target;
+    let match;
     while (target && target != document && !( match = target.matches('div.key'))) {
         target = target.parentNode;
     }
     if (!match) return;
     window.dispatchEvent(new KeyboardEvent('keydown', {code: target.id.slice(4), shiftKey: e.shiftKey, ctrlKey: e.ctrlKey, altKey: e.altKey}));
-};
+}
 
 function keyboardMouseUpHandler(e) {
     // Поднимаемся вверх до div.key
     let target = e.target;
+    let match;
     while (target && target != document && !( match = target.matches('div.key'))) {
         target = target.parentNode;
     }
@@ -464,7 +464,7 @@ function keyboardMouseUpHandler(e) {
         return;
     }
     window.dispatchEvent(new KeyboardEvent('keyup', {code: key}));
-};
+}
 
 function init() {
     renderLayout();
@@ -473,13 +473,11 @@ function init() {
     window.addEventListener('keyup', keyUpHendler);
     elKeyboard.addEventListener('mousedown', keyboardMouseDownHandler);
     elKeyboard.addEventListener('mouseup', keyboardMouseUpHandler);
-    // elKeyboard.addEventListener('mousedown', touchbarMouseDownHandler);
-    // elKeyboard.addEventListener('mouseup', touchbarMouseUpHandler);
     textarea.focus();
     // Блокируем ввод текста в textarea естественным образом
     textarea.addEventListener('keydown', e => e.preventDefault());
     textarea.addEventListener('keyup', e => e.preventDefault());
     textarea.addEventListener('keypress', e => e.preventDefault());
-};
+}
 
 window.onload = init;
