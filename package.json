@@ -4,7 +4,7 @@
   "description": "virtual-keyboard",
   "main": "app.js",
   "scripts": {
-    "lint": "eslint modules",
+    "lint": "eslint src/",
     "build": "webpack"
   },
   "repository": {
